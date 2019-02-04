@@ -1,0 +1,76 @@
+```{r 1.reading csv files}
+MyData<-read.csv("MyData.csv",TRUE,",")
+MyData2<-read.csv("PatientData.csv",TRUE,",")
+MyData
+MyData2
+```
+
+```{r 2.creating vectors}
+
+ Vector1<-MyData[,3]
+ Vector1
+ Vector2<-MyData[,4]
+ #calculating mean for reference
+ mean(Vector1)
+ mean(Vector2)
+
+```
+
+
+```{r 3.calculating mean using for loop}
+ #forloop
+  sum<-0
+  count<-0
+for(i in seq_along(Vector1))
+  {
+   
+  sum<-sum+Vector1[i]
+  count<-count+1
+  }
+   mean<-sum/count
+     print(mean)
+```
+
+```{r 4.defining function for Mean}
+
+#mean function creation
+   
+   MeanFunc<-function(example){
+    sum<-0
+    count<-0
+     
+     for(i in seq_along(example)){
+        sum<-sum+example[i]
+        count<-count+1
+        
+     }
+     
+     mean<-sum/count
+     print(mean)
+     
+   }
+  MeanFunc(Vector1)
+  
+  #testing using mean function
+  
+   test<-c(10,20,30,40,50,60,70)
+   MeanFunc(test)
+```
+
+
+```{r 5.using lapply function to calculate mean}
+  # vector3 defined from second numeric data list
+   Vector3<-MyData2[,3]
+   mean(Vector3)
+   myList<-list(a=vector3,b=Vector2)
+   print("---------------")
+   #inorder to test
+   mean(vector3)
+   mean(Vector2)
+   print("----------------------")
+   lapply(myList,MeanFunc)
+   
+
+```
+
+
