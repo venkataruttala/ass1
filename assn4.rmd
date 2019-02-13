@@ -1,0 +1,16 @@
+
+```{r}
+install.packages(XML)
+install.packages(rvest)
+library(XML)
+library(rvest)
+url<-read_html("https://taxfoundation.org/federal-tax-revenue-source-1934-2018/")
+ url <- url%>%
+   html_nodes("table")%>%
+   html_table(fill=TRUE)
+ tableInfo<-data.frame(url)
+ tableInfo
+ 
+```
+
+
