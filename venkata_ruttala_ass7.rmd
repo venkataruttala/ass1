@@ -1,0 +1,53 @@
+-----
+title: "Assignment_7"
+author: "Venkata Ruttala"
+date: "3/12/2019"
+output: html_document
+-----
+
+
+
+
+
+```{r}
+install.packages(lubridate)
+install.packages(rvest)
+install.packages(XML)
+url<-read_html("https://www.sfu.ca/sasdoc/sashtml/accdb/z0389375.htm")
+ url <- url%>%
+   html_nodes("table")%>%
+   
+   html_table(fill=TRUE)
+
+ Information<-url[[7]]
+ #Information
+ HireDate<-as.Date(Information$HIREDATE,format("%d%b%Y"))
+ HireDate
+today<-as.Date(Sys.Date(),format("%Y%m%d"))
+years<-year(today)-year(HireDate)
+Information<-cbind(Information,years)
+#scraped adat afrom website 
+Information
+
+#ggplot2 scatter plot with linear regression 
+str(Information)
+q<-ggplot(Information,aes(x=EMPID,y=DEPT,col=DEPT))
+q+geom_point()
+q+geom_smooth(method=lm)
+
+
+```
+
+
+
+```{r scatter plot with above dataset bhavani}
+str(Information)
+q<-ggplot(Information,aes(x=EMPID,y=DEPT,col=DEPT))
+q+geom_point()
+q+geom_smooth(method=lm)
+
+
+```
+
+
+
