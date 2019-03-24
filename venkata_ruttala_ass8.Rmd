@@ -1,0 +1,56 @@
+-----
+title: "Assignment_8"
+author: "Venkata Ruttala"
+date: "3/23/2019"
+output: html_document
+-----
+
+
+```{r}
+install.packages(lubridate)
+install.packages(rvest)
+install.packages(XML)
+url<-read_html("https://www.sfu.ca/sasdoc/sashtml/accdb/z0389375.htm")
+ url <- url%>%
+   html_nodes("table")%>%
+   
+   html_table(fill=TRUE)
+
+ Information<-url[[7]]
+ #Information
+ HireDate<-as.Date(Information$HIREDATE,format("%d%b%Y"))
+ HireDate
+today<-as.Date(Sys.Date(),format("%Y%m%d"))
+years<-year(today)-year(HireDate)
+Information<-cbind(Information,years)
+#scraped data from website 
+
+
+#ggplot2 scatter plot with linear regression 
+str(Information)
+Information$salary<-as.numeric(Information$SALARY)
+Information<-Information[1:21,]
+Information
+q<-ggplot(Information,aes(x=salary,y=years))
+q<-q+geom_point()
+q
+#q+geom_smooth(method=lm,se=FALSE)
+par(mar=rep(0.2,4))
+k_means_Info<-kmeans(Information[,c(8,7)],centers = 3)
+names(k_means_Info)
+Information$cluster<-as.factor(k_means_Info$cluster)
+
+plot(Information$salary,Information$years,col=Information$cluster,pch=19,cex=2)
+points(k_means_Info$centers,col=1:3,pch=3,cex=3,lwd=3)
+
+
+
+
+```
+
+
+
+
+
+
+
