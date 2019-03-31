@@ -1,0 +1,75 @@
+-----
+title: "Assignment_9"
+author: "Venkata Ruttala"
+date: "3/30/2019"
+output: html_document
+-----
+
+
+```{r}
+install.packages(lubridate)
+install.packages(rvest)
+install.packages(XML)
+url<-read_html("https://www.sfu.ca/sasdoc/sashtml/accdb/z0389375.htm")
+ url <- url%>%
+   html_nodes("table")%>%
+   
+   html_table(fill=TRUE)
+
+ Information<-url[[7]]
+ #Information
+ HireDate<-as.Date(Information$HIREDATE,format("%d%b%Y"))
+ HireDate
+today<-as.Date(Sys.Date(),format("%Y%m%d"))
+years<-year(today)-year(HireDate)
+Information<-cbind(Information,years)
+
+str(Information)
+Information$salary<-as.numeric(Information$SALARY)
+Information<-Information[1:21,]
+Information
+q<-ggplot(Information,aes(x=years,y=salary))
+q<-q+geom_point(size=3,colour="blue",alpha=0.2)
+q<-q+geom_smooth(method=lm,se=FALSE,colour="black")
+q
+
+fit<-lm(salary~years,data=Information)
+coef(fit)
+summary(fit)
+xyplot(resid(fit)~fitted(fit),
+xlab="FittedValues",
+ylab="Residuals",
+main="Residual Diagnostic Plot",
+panel=function(x,y,...)
+  {
+  panel.grid(h=-1,v=-1)
+  panel.abline(h=0)
+  panel.xyplot(x,y,...)
+  }
+)
+
+#qqmath(~resid(fit),xlab="Values",ylab="Residuals")
+
+#par(mfrow=c(2,2))
+#plot(fit)
+
+Information$predicted<-predict(fit)
+Information$residuals<-residuals(fit)
+#Information
+
+# plotting residual and predicted values
+ggplot(Information,aes(x=years,y=salary))+geom_point()+geom_point(aes(y=predicted),shape=1)
+
+ggplot(Information,aes(x=years,y=salary))+geom_segment(aes(xend=years,yend=predicted))+geom_point()+geom_point(aes(y=predicted),shape=1)
+
+ggplot(Information,aes(x=years,y=salary))+geom_smooth(method=lm,se=FALSE,color="lightgrey")+geom_segment(aes(xend=years,yend=predicted),alpha=0.2)+geom_point(aes(color=abs(residuals),size=abs(residuals)))+scale_colour_continuous(low="blue",high="red")+guides(color=FALSE,size=FALSE)+geom_point(aes(y=predicted),shape=1)
+
+# differentiating upper and lower color
+ggplot(Information,aes(x=years,y=salary))+geom_smooth(method=lm,se=FALSE,color="lightgrey")+geom_segment(aes(xend=years,yend=predicted),alpha=0.2)+geom_point(aes(color=residuals))+scale_color_gradient2(low="blue",high="red")+guides(color=FALSE)+geom_point(aes(y=predicted),shape=1)
+
+```
+
+
+
+
+
